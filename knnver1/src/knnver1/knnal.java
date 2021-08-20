@@ -164,15 +164,16 @@ public class knnal extends javax.swing.JFrame {
         for(int i=0; i<N; i++){
             X.add((int)(Math.random()*centroX+centro));
             Y.add((int)(Math.random()*this.getHeight()+4));
-            color.add((int)(Math.random()*5+1));
+            color.add((int)(Math.random()*3+1));
 
         }
         repaint();
 
-        }
-
+    }
+    
     public void paint(Graphics g){
         super.paint(g);
+        funciones func = new funciones();
 
         g.setColor(Color.BLACK);
         g.drawLine(centro,centroY, this.getWidth(),centroY);
@@ -193,182 +194,159 @@ public class knnal extends javax.swing.JFrame {
 
         }
         g.setColor(Color.GRAY);
-        if(!X.isEmpty()){
-            int punto;
-
-            for(int i=1; i<X.size(); i++){
-                punto=color.get(i);
-                switch(punto){
-                    case 1:
-                    g.setColor(Color.BLACK);
-                    g.drawLine(X.get(i)-5,Y.get(i),X.get(i)+5,Y.get(i));
-                    g.drawLine(X.get(i),Y.get(i)-5,X.get(i),Y.get(i)+5);
-                    break;
-                    case 2:
-                    g.setColor(Color.RED);
-                    g.drawLine(X.get(i)-5,Y.get(i),X.get(i)+5,Y.get(i));
-                    g.drawLine(X.get(i),Y.get(i)-5,X.get(i),Y.get(i)+5);
-                    break;
-                    case 3:
-                    g.setColor(Color.ORANGE);
-                    g.drawLine(X.get(i)-5,Y.get(i),X.get(i)+5,Y.get(i));
-                    g.drawLine(X.get(i),Y.get(i)-5,X.get(i),Y.get(i)+5);
-                    break;
-                    case 4:
-                    g.setColor(Color.MAGENTA);
-                    g.drawLine(X.get(i)-5,Y.get(i),X.get(i)+5,Y.get(i));
-                    g.drawLine(X.get(i),Y.get(i)-5,X.get(i),Y.get(i)+5);
-                    break;
-                    case 5:
-                    g.setColor(Color.BLUE);
-                    g.drawLine(X.get(i)-5,Y.get(i),X.get(i)+5,Y.get(i));
-                    g.drawLine(X.get(i),Y.get(i)-5,X.get(i),Y.get(i)+5);
-                    break;
-                }
-            }
+        if(!X.isEmpty()){          
+            
+            func.colores(g,X,Y,color);
+            
         }
     }//GEN-LAST:event_btnpintarActionPerformed
 
-    public int Vecinos(int m, int p, int t){
-     Double [] n = new Double[m];
-     Integer [] ab = new Integer [m];
-     double linea =0;
-     double h=0;
-     int br=0;
-     switch (m){
-         case 1:
-             n[0]=Math.sqrt((Math.pow((X.get(0)-p),2))+(Math.pow((Y.get(0)-t),2)));
-             ab[0]=color.get(0);
-             for(int i=m;i<X.size()-1;i++){
-                 linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
-                 if(n[0]>=linea){
-                    n[0]=linea;
-                    ab[0]=color.get(i);
-                  
-                     }
-                 
-             }
-         break;
-             
-             case 2:
-             n[0]=Math.sqrt((Math.pow((X.get(0)-p),2))+(Math.pow((Y.get(0)-t),2)));
-             n[1]=Math.sqrt((Math.pow((X.get(1)-p),2))+(Math.pow((Y.get(1)-t),2)));
-             ab[0]=color.get(0);
-             for(int i=m;i<X.size()-1;i++){
-                 linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
-                 if(n[0]>=linea){
-                    n[0]=linea;
-                    ab[0]=color.get(i);
-    
-                 }
-                 for(int j=0;j<m-1;j++){
-                      for(int k=j+1; k<m;k++){
-                          if(n[j]<n[k]){
-                              h=n[j];
-                              n[j]=n[k];
-                              n[k]=h;
-                              br=ab[j];
-                              ab[j]=ab[k];
-                              ab[k]=br;
-                          }
-                      }
-                 }
-             }
-             
-                 break;
-                 
-             case 3:
-             n[0]=Math.sqrt((Math.pow((X.get(0)-p),2))+(Math.pow((Y.get(0)-t),2)));
-             n[1]=Math.sqrt((Math.pow((X.get(1)-p),2))+(Math.pow((Y.get(1)-t),2)));
-             n[2]=Math.sqrt((Math.pow((X.get(2)-p),2))+(Math.pow((Y.get(2)-t),2)));
-             ab[0]=color.get(0);
-             ab[1]=color.get(1);
-             ab[2]=color.get(2);
-             for(int i=m;i<X.size()-1;i++){
-                 linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
-                 if(n[0]>=linea){
-                    n[0]=linea;
-                    ab[0]=color.get(i);
-                 }
-                     for(int j=0;j<m-1;j++){
-                      for(int k=j+1; k<m;k++){
-                          if(n[j]<n[k]){
-                              h=n[j];
-                              n[j]=n[k];
-                              n[k]=h;
-                              br=ab[j];
-                              ab[j]=ab[k];
-                              ab[k]=br;
-                          }
-                      }
-                 }
-             }
-                 break; 
-                 
-             case 4:
-                 n[0]=Math.sqrt((Math.pow((X.get(0)-p),2))+(Math.pow((Y.get(0)-t),2)));
-                 n[1]=Math.sqrt((Math.pow((X.get(1)-p),2))+(Math.pow((Y.get(1)-t),2)));
-                 n[2]=Math.sqrt((Math.pow((X.get(2)-p),2))+(Math.pow((Y.get(2)-t),2)));
-                 n[3]=Math.sqrt((Math.pow((X.get(3)-p),2))+(Math.pow((Y.get(3)-t),2)));
-             ab[0]=color.get(0);
-             ab[1]=color.get(1);
-             ab[2]=color.get(2);
-             ab[3]=color.get(3);
-             for(int i=m;i<X.size()-1;i++){
-                 linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
-                 if(n[0]>=linea){
-                    n[0]=linea;
-                    ab[0]=color.get(i); 
-                 }
-                     for(int j=0;j <m-1;j++){
-                      for(int k=j+1; k<m;k++){
-                          if(n[j]<n[k]){
-                              h=n[j];
-                              n[j]=n[k];
-                              n[k]=h;
-                              br=ab[j];
-                              ab[j]=ab[k];
-                              ab[k]=br;
-                          }
-                      }
-                 }
-             }
-                 break;
-             case 5:
-             n[0]=Math.sqrt((Math.pow((X.get(0)-p),2))+(Math.pow((Y.get(0)-t),2)));
-             n[1]=Math.sqrt((Math.pow((X.get(1)-p),2))+(Math.pow((Y.get(1)-t),2)));
-             n[2]=Math.sqrt((Math.pow((X.get(2)-p),2))+(Math.pow((Y.get(2)-t),2)));
-             n[3]=Math.sqrt((Math.pow((X.get(3)-p),2))+(Math.pow((Y.get(3)-t),2)));
-             n[4]=Math.sqrt((Math.pow((X.get(4)-p),2))+(Math.pow((Y.get(4)-t),2)));
-             ab[0]=color.get(0);
-             ab[1]=color.get(1);
-             ab[2]=color.get(2);
-             ab[3]=color.get(3);
-             ab[4]=color.get(4);
-             for(int i=m;i<X.size()-1;i++){
-                 linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
-                 if(n[0]>=linea){
-                    n[0]=linea;
-                    ab[0]=color.get(i);
-                 }
-                     for(int j=0;j<m-1;j++){
-                      for(int k=j+1; k<m;k++){
-                          if(n[j]<n[k]){
-                              h=n[j];
-                              n[j]=n[k];
-                              n[k]=h;
-                              br=ab[j];
-                              ab[j]=ab[k];
-                              ab[k]=br;
-                          }
-                      }
-                 }
-             }
-                 break;
-         
-     }
+    public int Vecinos(int m, int p, int t){        
+        double linea =0;
+        double h=0;
+        int br=0;
+        Double [] n = new Double[m];
+        Integer [] ab = new Integer [m];
+        switch (m){
+            case 1:
+                System.out.println("valor de m = "+m);
+                for(int i = 0; i < m ;i++){
+                    n[i]=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
+                    ab[i]=color.get(i);
+                    for(int j=m;j<X.size()-1;j++){
+                    linea=Math.sqrt((Math.pow((X.get(j)-p),2))+(Math.pow((Y.get(j)-t),2)));
+                    if(n[i]>=linea){
+                       n[i]=linea;
+                       ab[i]=color.get(j);
+
+                    }
+                }
+                }
+                
+                
+            break;
+
+            case 2:
+                System.out.println("valor de m = "+m);
+                for(int a =0 ;a <m ;a++){
+                    n[a]=Math.sqrt((Math.pow((X.get(a)-p),2))+(Math.pow((Y.get(a)-t),2)));
+                    //n[1]=Math.sqrt((Math.pow((X.get(1)-p),2))+(Math.pow((Y.get(1)-t),2)));
+                    ab[a]=color.get(a);
+                    //ab[1]=color.get(0);
+                }
+                
+                for(int i=m;i<X.size()-1;i++){
+                    linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
+                    if(n[0]>=linea){
+                       n[0]=linea;
+                       ab[0]=color.get(i);
+
+                    }
+                    for(int j=0;j<m-1;j++){
+                         for(int k=j+1; k<m;k++){
+                             if(n[j]<n[k]){
+                                 h=n[j];
+                                 n[j]=n[k];
+                                 n[k]=h;
+                                 br=ab[j];
+                                 ab[j]=ab[k];
+                                 ab[k]=br;
+                             }
+                         }
+                    }
+                }
+
+                break;
+
+            case 3:
+                System.out.println("valor de m = "+m);
+                for(int a =0 ;a <m ;a++){
+                    n[a]=Math.sqrt((Math.pow((X.get(a)-p),2))+(Math.pow((Y.get(a)-t),2)));
+                    //n[1]=Math.sqrt((Math.pow((X.get(1)-p),2))+(Math.pow((Y.get(1)-t),2)));
+                    ab[a]=color.get(a);
+                    //ab[1]=color.get(0);
+                }
+                for(int i=m;i<X.size()-1;i++){
+                    linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
+                    if(n[0]>=linea){
+                       n[0]=linea;
+                       ab[0]=color.get(i);
+                    }
+                        for(int j=0;j<m-1;j++){
+                         for(int k=j+1; k<m;k++){
+                             if(n[j]<n[k]){
+                                 h=n[j];
+                                 n[j]=n[k];
+                                 n[k]=h;
+                                 br=ab[j];
+                                 ab[j]=ab[k];
+                                 ab[k]=br;
+                             }
+                         }
+                    }
+                }
+                break; 
+
+            case 4:
+                System.out.println("valor de m = "+m);
+                for(int a =0 ;a <m ;a++){
+                    n[a]=Math.sqrt((Math.pow((X.get(a)-p),2))+(Math.pow((Y.get(a)-t),2)));
+                    //n[1]=Math.sqrt((Math.pow((X.get(1)-p),2))+(Math.pow((Y.get(1)-t),2)));
+                    ab[a]=color.get(a);
+                    //ab[1]=color.get(0);
+                }
+                for(int i=m;i<X.size()-1;i++){
+                    linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
+                    if(n[0]>=linea){
+                       n[0]=linea;
+                       ab[0]=color.get(i); 
+                    }
+                        for(int j=0;j <m-1;j++){
+                         for(int k=j+1; k<m;k++){
+                             if(n[j]<n[k]){
+                                 h=n[j];
+                                 n[j]=n[k];
+                                 n[k]=h;
+                                 br=ab[j];
+                                 ab[j]=ab[k];
+                                 ab[k]=br;
+                             }
+                         }
+                    }
+                }
+                break;
+            case 5:
+                System.out.println("valor de m = "+m);
+                for(int a =0 ;a <m ;a++){
+                    n[a]=Math.sqrt((Math.pow((X.get(a)-p),2))+(Math.pow((Y.get(a)-t),2)));
+                    //n[1]=Math.sqrt((Math.pow((X.get(1)-p),2))+(Math.pow((Y.get(1)-t),2)));
+                    ab[a]=color.get(a);
+                    //ab[1]=color.get(0);
+                }
+                for(int i=m;i<X.size()-1;i++){
+                    linea=Math.sqrt((Math.pow((X.get(i)-p),2))+(Math.pow((Y.get(i)-t),2)));
+                    if(n[0]>=linea){
+                       n[0]=linea;
+                       ab[0]=color.get(i);
+                    }
+                        for(int j=0;j<m-1;j++){
+                         for(int k=j+1; k<m;k++){
+                             if(n[j]<n[k]){
+                                 h=n[j];
+                                 n[j]=n[k];
+                                 n[k]=h;
+                                 br=ab[j];
+                                 ab[j]=ab[k];
+                                 ab[k]=br;
+                             }
+                         }
+                    }
+                }
+                break;
+
+        }
      
-     int n1 = 0, n2 = 0, n3 = 0;
+        int n1 = 0, n2 = 0, n3 = 0;
 
         for (int i = 0; i < m; i++) {
             switch (ab[i]) {
@@ -381,8 +359,8 @@ public class knnal extends javax.swing.JFrame {
                 default:
                 n3++;
                     break;
-    }
-    }
+            }
+        }
         if (n1 > n2 && n1 > n2) {
                  return 1;
             } else if (n2 > n1 && n2 > n3) {
