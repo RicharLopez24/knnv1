@@ -22,18 +22,22 @@ import javax.swing.JPanel;
  */
 public class K_means extends javax.swing.JFrame {
 
+    //cordenadas puntos
     ArrayList<Integer> corPunX = new ArrayList<>();
     ArrayList<Integer> corPunY = new ArrayList<>();
-    
+    //cordenadas atractores
     ArrayList<Integer> corAtratX = new ArrayList<>();
     ArrayList<Integer> corAtratY = new ArrayList<>();
-    
+    //guardo distancias
     ArrayList<Float> distancias = new ArrayList<>();
-    
+    //color de lso atractores
     ArrayList<Color> colorAtractor = new ArrayList<>();
+    //sumara los puntos de la misma clase
+    ArrayList<Integer> clasesX = new ArrayList<>();
+    ArrayList<Integer> clasesY = new ArrayList<>();
     
-    ArrayList<Color> colorPuntos = new ArrayList<>();
-    
+    ArrayList<Color> clasesColos = new ArrayList<>();
+    //numero de atratores y puntos
     int atractores,contaCentor=1;
     int Np;
     
@@ -116,13 +120,13 @@ public class K_means extends javax.swing.JFrame {
         });
         jPanel1.add(button2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 480, -1, -1));
 
-        btnCalCentroide.setText("centroide");
+        btnCalCentroide.setText("calcular centroides");
         btnCalCentroide.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCalCentroideActionPerformed(evt);
             }
         });
-        jPanel1.add(btnCalCentroide, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, -1, -1));
+        jPanel1.add(btnCalCentroide, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, -1, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 530));
 
@@ -165,7 +169,8 @@ public class K_means extends javax.swing.JFrame {
         atractores = 0;
         contaCentor=1;
         colorAtractor.clear();
-        colorPuntos.clear();
+        clasesColos.clear();
+        //colorPuntos.clear();
         repaint();
     }//GEN-LAST:event_btnlimpiarActionPerformed
 
@@ -174,7 +179,7 @@ public class K_means extends javax.swing.JFrame {
         Np = Integer.parseInt(txtCantPuntos.getText());
         atractores = Integer.parseInt(txtAtractores.getText());
         puntosCor(Np);                       
-        pintarPuntos(Np);
+        pintarPuntos();
     }//GEN-LAST:event_btngenerarActionPerformed
 
     private void JPpuntosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JPpuntosMousePressed
@@ -226,6 +231,8 @@ public class K_means extends javax.swing.JFrame {
         float minimo = 0;
         int indexMin = 0;
         Color caux;
+        
+        System.out.println("cordenadas centros "+corAtratX+" "+corAtratY);
         Graphics g = JPpuntos.getGraphics();
         for (int i = 0; i < Np; i++) {
             
@@ -242,7 +249,7 @@ public class K_means extends javax.swing.JFrame {
            // System.out.println("color del atractor "+caux);
             
             //colorPuntos.add(caux);
-            
+            clasesColos.add(caux);
             g.setColor(caux);
             g.fillOval(corPunX.get(i), corPunY.get(i), 5, 5);
           
@@ -251,14 +258,65 @@ public class K_means extends javax.swing.JFrame {
             distancias.clear();
         }
         
-        g.setColor(Color.black);
+        /*
         for (int i = 0; i < atractores; i++) {
-            g.fillOval(corAtratX.get(i), corAtratY.get(i), 10, 10);
-        }
+            g.setColor(colorAtractor.get(i));
+            g.fillOval(corAtratX.get(i), corAtratY.get(i), 15, 15);
+        }*/
     }//GEN-LAST:event_btnClasesActionPerformed
 
     private void btnCalCentroideActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalCentroideActionPerformed
         // TODO add your handling code here:
+        System.out.println("cordenadas antes "+corAtratX+"."+corAtratY);
+        ArrayList<Integer> AtratX = new ArrayList<>();
+        ArrayList<Integer> AtratY = new ArrayList<>();
+        int cont=0;
+        int Contadores[] = new int[atractores];       
+        Graphics g = JPpuntos.getGraphics();
+        System.out.println("colores " +clasesColos.size());
+        
+        for (int i = 0; i < atractores; i++) {
+            Contadores[i]=0;
+            AtratX.add(0);
+            AtratY.add(0);
+        }
+        
+        for (int i = 0; i < Np; i++) {
+            for (int j = 0; j < atractores; j++) {
+                if(clasesColos.get(i) == colorAtractor.get(j)){
+                    cont = AtratX.get(j) + corPunX.get(i);
+                    AtratX.set(j, cont);
+                    cont = 0;
+                    cont = AtratY.get(j) + corPunY.get(i);
+                    AtratY.set(j, cont);
+                    
+                    Contadores[j] =  Contadores[j] +1;
+                   
+                }              
+            }                       
+            
+        }    
+        
+        
+
+        for (int k = 0; k < atractores; k++) {
+           AtratX.set(k,AtratX.get(k) / Contadores[k]);
+           AtratY.set(k,AtratY.get(k) / Contadores[k]);
+           //g.setColor(colorAtractor.get(k));
+           g.setColor(Color.black);
+           g.fillOval(AtratX.get(k), AtratY.get(k), 15, 15);
+           
+        }
+        
+        for (int k = 0; k < atractores; k++) {
+           corAtratX.set(k, AtratX.get(k));
+           corAtratY.set(k, AtratY.get(k));
+           
+        }
+        clasesColos.clear();
+        
+        System.out.println("cordenadas despues "+corAtratX+"."+corAtratY);
+        
         
     }//GEN-LAST:event_btnCalCentroideActionPerformed
   
@@ -269,10 +327,10 @@ public class K_means extends javax.swing.JFrame {
         return d=(float) Math.sqrt( Math.pow(x2-x1, 2)+ Math.pow(y2-y1, 2) );         
       
     }
-    public void pintarPuntos(int cant){
+    public void pintarPuntos(){
        Graphics g = JPpuntos.getGraphics();
        g.setColor(Color.black);
-        for (int i = 0; i < cant; i++) {
+        for (int i = 0; i < Np; i++) {
             g.fillOval(corPunX.get(i), corPunY.get(i), 5, 5);
         }
     }
