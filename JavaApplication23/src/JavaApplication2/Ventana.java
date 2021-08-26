@@ -5,6 +5,7 @@
  */
 package JavaApplication2;
 
+import K_means.K_means;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -20,36 +21,28 @@ import javax.swing.JPanel;
  *
  * @author carol
  */
-public class K_means extends javax.swing.JFrame {
+public class Ventana extends javax.swing.JFrame {
 
-    //cordenadas puntos
-    ArrayList<Integer> corPunX = new ArrayList<>();
-    ArrayList<Integer> corPunY = new ArrayList<>();
-    //cordenadas atractores
-    ArrayList<Integer> corAtratX = new ArrayList<>();
-    ArrayList<Integer> corAtratY = new ArrayList<>();
     //guardo distancias
     ArrayList<Float> distancias = new ArrayList<>();
     //color de lso atractores
-    ArrayList<Color> colorAtractor = new ArrayList<>();
+    
     //sumara los puntos de la misma clase
     ArrayList<Integer> clasesX = new ArrayList<>();
     ArrayList<Integer> clasesY = new ArrayList<>();
     
-    ArrayList<Color> clasesColos = new ArrayList<>();
+ 
     //numero de atratores y puntos
     int atractores,contaCentor=1;
     int Np;
     
+    K_means algoritmo = new K_means();
     
-    //private Object jTextField1;
-   // private Object JTextField2;
-    
-
+  
     /**
      * Creates new form K_means
      */
-    public K_means() {
+    public Ventana() {
         initComponents();
 
     }
@@ -71,8 +64,8 @@ public class K_means extends javax.swing.JFrame {
         txtAtractores = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        button2 = new java.awt.Button();
         btnCalCentroide = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         JPpuntos = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -112,14 +105,6 @@ public class K_means extends javax.swing.JFrame {
         jLabel2.setText("atractores");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
-        button2.setLabel("Salir");
-        button2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button2ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(button2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 480, -1, -1));
-
         btnCalCentroide.setText("calcular centroides");
         btnCalCentroide.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -127,6 +112,14 @@ public class K_means extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnCalCentroide, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, -1, -1));
+
+        btnSalir.setText("Salir");
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 470, 80, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 530));
 
@@ -153,23 +146,15 @@ public class K_means extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
-        // TODO add your handling code here:
-         System.exit(0);
-    }//GEN-LAST:event_button2ActionPerformed
-
     private void btnlimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlimpiarActionPerformed
         // TODO add your handling code here:
       
         txtCantPuntos.setText("");
-        txtAtractores.setText("");
-        corAtratX.clear();
-        corAtratY.clear();
+        txtAtractores.setText("");        
         Np = 0;
         atractores = 0;
-        contaCentor=1;
-        colorAtractor.clear();
-        clasesColos.clear();
+        contaCentor=1;                
+        algoritmo.limpiar();
         //colorPuntos.clear();
         repaint();
     }//GEN-LAST:event_btnlimpiarActionPerformed
@@ -178,14 +163,14 @@ public class K_means extends javax.swing.JFrame {
         // TODO add your handling code here:
         Np = Integer.parseInt(txtCantPuntos.getText());
         atractores = Integer.parseInt(txtAtractores.getText());
-        puntosCor(Np);                       
+        algoritmo.puntosCor(Np);                       
         pintarPuntos();
     }//GEN-LAST:event_btngenerarActionPerformed
 
     private void JPpuntosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JPpuntosMousePressed
         // TODO add your handling code here:
         
-        System.out.println("atractores "+atractores);
+        //System.out.println("atractores "+atractores);
         if(atractores >= contaCentor){
             Graphics g = JPpuntos.getGraphics();
             switch(contaCentor){
@@ -215,9 +200,9 @@ public class K_means extends javax.swing.JFrame {
                         g.setColor(Color.CYAN);//establecemos el color
                         break;
             }
-            corAtratX.add(evt.getX());
-            corAtratY.add(evt.getY());
-            colorAtractor.add(g.getColor());
+            algoritmo.getCorAtratX().add(evt.getX());            
+            algoritmo.getCorAtratY().add(evt.getY());
+            algoritmo.getColorAtractor().add(g.getColor());
             g.fillOval(evt.getX(), evt.getY(), 10, 10);
             contaCentor++;
         }
@@ -232,12 +217,12 @@ public class K_means extends javax.swing.JFrame {
         int indexMin = 0;
         Color caux;
         
-        System.out.println("cordenadas centros "+corAtratX+" "+corAtratY);
+        System.out.println("cordenadas centros "+algoritmo.getCorAtratX()+" "+algoritmo.getCorAtratY());
         Graphics g = JPpuntos.getGraphics();
         for (int i = 0; i < Np; i++) {
             
             for (int j = 0; j < atractores; j++) {
-                distancias.add(calcularDis(corPunX.get(i), corPunY.get(i), corAtratX.get(j), corAtratY.get(j)));
+                distancias.add(algoritmo.calcularDis(algoritmo.getCorPunX().get(i), algoritmo.getCorPunY().get(i), algoritmo.getCorAtratX().get(j), algoritmo.getCorAtratY().get(j)));
               //  System.out.println("distancias "+i+" ; "+distancias);
                 
             }
@@ -245,35 +230,30 @@ public class K_means extends javax.swing.JFrame {
             //System.out.println("valor minimo "+minimo);
             indexMin = distancias.indexOf(minimo);
             //System.out.println("indice valor "+indexMin);
-            caux = colorAtractor.get(indexMin);
+            caux = algoritmo.getColorAtractor().get(indexMin);
            // System.out.println("color del atractor "+caux);
             
             //colorPuntos.add(caux);
-            clasesColos.add(caux);
+            algoritmo.getClasesColor().add(caux);
             g.setColor(caux);
-            g.fillOval(corPunX.get(i), corPunY.get(i), 5, 5);
+            g.fillOval(algoritmo.getCorPunX().get(i), algoritmo.getCorPunY().get(i), 5, 5);
           
             
             
             distancias.clear();
         }
         
-        /*
-        for (int i = 0; i < atractores; i++) {
-            g.setColor(colorAtractor.get(i));
-            g.fillOval(corAtratX.get(i), corAtratY.get(i), 15, 15);
-        }*/
+      
     }//GEN-LAST:event_btnClasesActionPerformed
 
     private void btnCalCentroideActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalCentroideActionPerformed
         // TODO add your handling code here:
-        System.out.println("cordenadas antes "+corAtratX+"."+corAtratY);
+       // System.out.println("cordenadas antes "+corAtratX+"."+corAtratY);
         ArrayList<Integer> AtratX = new ArrayList<>();
         ArrayList<Integer> AtratY = new ArrayList<>();
         int cont=0;
         int Contadores[] = new int[atractores];       
-        Graphics g = JPpuntos.getGraphics();
-        System.out.println("colores " +clasesColos.size());
+        Graphics g = JPpuntos.getGraphics();        
         
         for (int i = 0; i < atractores; i++) {
             Contadores[i]=0;
@@ -283,11 +263,11 @@ public class K_means extends javax.swing.JFrame {
         
         for (int i = 0; i < Np; i++) {
             for (int j = 0; j < atractores; j++) {
-                if(clasesColos.get(i) == colorAtractor.get(j)){
-                    cont = AtratX.get(j) + corPunX.get(i);
+                if(algoritmo.getClasesColor().get(i) == algoritmo.getColorAtractor().get(j)){
+                    cont = AtratX.get(j) + algoritmo.getCorPunX().get(i);
                     AtratX.set(j, cont);
                     cont = 0;
-                    cont = AtratY.get(j) + corPunY.get(i);
+                    cont = AtratY.get(j) + algoritmo.getCorPunY().get(i);
                     AtratY.set(j, cont);
                     
                     Contadores[j] =  Contadores[j] +1;
@@ -309,43 +289,29 @@ public class K_means extends javax.swing.JFrame {
         }
         
         for (int k = 0; k < atractores; k++) {
-           corAtratX.set(k, AtratX.get(k));
-           corAtratY.set(k, AtratY.get(k));
+           algoritmo.getCorAtratX().set(k, AtratX.get(k));
+           algoritmo.getCorAtratY().set(k, AtratY.get(k));
            
         }
-        clasesColos.clear();
+        algoritmo.getClasesColor().clear();
         
-        System.out.println("cordenadas despues "+corAtratX+"."+corAtratY);
-        
+        System.out.println("cordenadas despues "+algoritmo.getCorAtratX()+"."+algoritmo.getCorAtratY());
         
     }//GEN-LAST:event_btnCalCentroideActionPerformed
-  
-    public float calcularDis( float x1, float y1, float x2, float y2){
-        
-        float d = 0;
-       
-        return d=(float) Math.sqrt( Math.pow(x2-x1, 2)+ Math.pow(y2-y1, 2) );         
-      
-    }
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_btnSalirActionPerformed
+
     public void pintarPuntos(){
        Graphics g = JPpuntos.getGraphics();
        g.setColor(Color.black);
         for (int i = 0; i < Np; i++) {
-            g.fillOval(corPunX.get(i), corPunY.get(i), 5, 5);
+            g.fillOval(algoritmo.getCorPunX().get(i), algoritmo.getCorPunY().get(i), 5, 5);
         }
     }
-    
-    public void puntosCor(int cant){
-        Random r = new Random();
-       
-        for(int i=0; i < cant; i++){
-            corPunX.add(r.nextInt(870)+5);
-            corPunY.add(r.nextInt(540)+5); 
-        }
         
-    }
-
-     
     /**
      * @param args the command line arguments
      */
@@ -363,20 +329,23 @@ public class K_means extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(K_means.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(K_means.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(K_means.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(K_means.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new K_means().setVisible(true);
+                new Ventana().setVisible(true);
             }
         });
     }
@@ -385,9 +354,9 @@ public class K_means extends javax.swing.JFrame {
     private javax.swing.JPanel JPpuntos;
     private javax.swing.JButton btnCalCentroide;
     private javax.swing.JButton btnClases;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JButton btngenerar;
     private javax.swing.JButton btnlimpiar;
-    private java.awt.Button button2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

@@ -5,7 +5,7 @@
  */
 package javaapplication23;
 
-import JavaApplication2.K_means;
+import JavaApplication2.Ventana;
 
 /**
  *
@@ -19,7 +19,7 @@ public class JavaApplication23 {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        K_means kmeans = new K_means();
+        Ventana kmeans = new Ventana();
         kmeans.setVisible(true);
     }
     
